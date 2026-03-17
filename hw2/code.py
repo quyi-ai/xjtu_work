@@ -35,7 +35,7 @@ def list_to_link(arg):
         l=[i,l]
     return l
 def main():
-    test=[randint(0,1000) for _ in range(min_num)]
+    test=[randint(-1000,1000) for _ in range(min_num)]
     sort_test=merge_sort(test)
     link=list_to_link(sort_test)
     print(link)
