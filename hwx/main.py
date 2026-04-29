@@ -65,3 +65,16 @@ def create_couriers(courier_count):
 def manhattan_distance(x1,y1,x2,y2):
     return abs(x1-x2)+abs(y1-y2)
 
+def calc_preorder_delivery(courier, order):
+    x,y=courier['x'],courier['y']
+    sx,sy=order['sx'],order['sy']
+    ex,ey=order['ex'],order['ey']
+
+    dis_to_pick=manhattan_distance(x,y,sx,sy)
+    time_to_pick=dis_to_pick/SPEED
+    arrive_at_pick=courier['available_time']+time_to_pick
+    pick_time=max(arrive_at_pick,order['t'])
+    dis_delivery=manhattan_distance(sx,sy,ex,ey)
+    time_to_delivery=dis_delivery/SPEED
+    delivery_time=time_to_delivery+pick_time
+    return delivery_time
