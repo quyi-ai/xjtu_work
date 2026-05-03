@@ -78,7 +78,7 @@ def calc_preorder_delivery(order, courier):#计算外卖员送预订单时间
     delivery_time=time_to_delivery+pick_time
     return delivery_time
 
-def calc_instant_delivery(order,courier):
+def calc_instant_delivery(order,courier):#计算外卖员送即时订单时间
     x,y=courier['x'],courier['y']
     sx,sy=order['sx'],order['sy']
     ex,ey=order['ex'],order['ey']
@@ -115,7 +115,7 @@ def assign_order(order,courier,delivery_time):#修改外卖员状态
     courier['x']=order['ex']
     courier['y']=order['ey']
 
-def schedule_orders(orders,couriers):
+def schedule_orders(orders,couriers):#按顺序处理所有订单，返回结果和统计
     results=[]
     total_completed=0
     for order in orders:
@@ -142,3 +142,30 @@ def schedule_orders(orders,couriers):
             total_completed+=1
     total_revenue=total_completed*REWARD_PER_ORDER
     return results,total_completed,total_revenue
+
+def print_results(results,total_completed,total_revenue):#输出每个订单结果和总收入
+    for result in results:
+            print(
+                result["id"],
+                result["courier_id"],
+                f'{result["delivery_time"]:.2f}',
+                result["success"]
+                )
+            print(total_completed, f"{total_revenue:.2f}")
+def main():#主函数，组织整个程序运行
+    input_text = sys.stdin.read()
+
+    data = parse_input(input_text)
+
+    couriers = create_couriers(data["courier_count"])
+
+    results, total_completed, total_revenue = schedule_orders(
+        data["orders"],
+        couriers
+    )
+
+    print_results(results, total_completed, total_revenue)
+
+
+if __name__ == "__main__":
+    main()
