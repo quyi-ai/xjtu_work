@@ -100,15 +100,18 @@ def is_success(order,delivery_time):#判断按时送达
 def choose_best_courier(order,couriers):#选择合适的外卖员，返回外卖员和送达时间
     best_courier = None
     best_delivery_time = None
+    best_cost=None
     for courier in couriers:
         if order['type']=='pre-order':
             delivery_time=calc_preorder_delivery(order,courier)
         else:
             delivery_time=calc_instant_delivery(order,courier)
         if is_success(order,delivery_time):
-            if best_courier==None or (best_delivery_time>delivery_time):
+            cost=delivery_time-max(order['t'],courier['available_time'])
+            if best_courier is None or (best_cost>cost):
                 best_courier=courier
                 best_delivery_time=delivery_time
+                best_cost=cost
     return best_courier,best_delivery_time
 def assign_order(order,courier,delivery_time):#修改外卖员状态
     courier['available_time']=delivery_time
