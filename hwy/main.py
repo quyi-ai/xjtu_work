@@ -15,13 +15,14 @@ class TrendingSystem:
 
     def advance_time(self, t):
         dt = t - self.current_time
-        global_factor *=self.lambda_decay ** dt
+        self.global_factor *= self.lambda_decay ** dt
         self.current_time = t
-  
+
     def update(self, event_type, topic_id, t):
         self.advance_time(t)
         increment = EVENT_SCORE_INCREMENTS[event_type]
-        self.normalized_scores[topic_id]+=increment/self.global_factor
+        old_score = self.normalized_scores.get(topic_id, 0.0)
+        self.normalized_scores[topic_id] = old_score + increment / self.global_factor
 
     def query(self, k, t):
         self.advance_time(t)
@@ -48,7 +49,8 @@ class TrendingSystem:
 
     def score(self, topic_id, t):
         self.advance_time(t)
-        return self.normalized_scores[topic_id]
+        return self.normalized_scores.get(topic_id, 0.0) * self.global_factor
+
 
 def main():
     lambda_line = sys.stdin.readline().strip()
@@ -72,23 +74,16 @@ def main():
         elif operation_name == "QUERY":
             k = int(parts[2])
             result = trending_system.query(k, timestamp)
-            # TODO: Print topic ids in one line, separated by spaces.
-            # Example: print(" ".join(str(topic_id) for topic_id in result))
-            pass
+            print(" ".join(str(topic_id) for topic_id in result))
         elif operation_name == "RANK":
             topic_id = int(parts[2])
             result = trending_system.rank(topic_id, timestamp)
-            # TODO: Print the rank result.
-            # Example: print(result)
-            pass
+            print(result)
         elif operation_name == "SCORE":
             topic_id = int(parts[2])
             result = trending_system.score(topic_id, timestamp)
-            # TODO: Print the score rounded to three digits after the decimal point.
-            # Example: print(f"{result:.3f}")
-            pass
+            print(f"{result:.3f}")
         else:
-            # TODO: Decide how to handle unknown operations.
             pass
 
 
